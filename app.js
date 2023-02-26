@@ -26,6 +26,15 @@ window.onload = ()=>{
   }, 3000);
 }
 
+var audiobtn = document.querySelectorAll(".card button");
+audiobtn.forEach((btn)=>{
+  btn.addEventListener("click",()=>{
+    var audio = btn.getAttribute("data-audio");
+    url="music/"+audio+".wav";
+    let music = new Audio(url);
+    music.play();
+  })
+})
 var picarray = [
   "https://pbs.twimg.com/media/D-u62wWUIAEZrLJ.jpg",
   "https://www.mintface.xyz/content/images/2021/08/QmTndiF423kjdXsNzsip1QQkBQqDuzDhJnGuJAXtv4XXiZ-1.png",
@@ -37,9 +46,9 @@ var picarray = [
   "https://m.media-amazon.com/images/M/MV5BMTQwZTNjNDctZWYyZS00M2U2LWI1NDktMjUyYzRlZjQzYTVkXkEyXkFqcGdeQXVyNTAyODkwOQ@@._V1_QL75_UY281_CR111,0,190,281_.jpg",
 ];
 
-const newsart = document.querySelector(".segment.wide .mySwiper");
+var newsart = document.querySelector(".segment.wide .mySwiper");
 const topart = document.querySelector(".segment.article .mySwiper");
-const headart = document.querySelector(".segment.headlines .mySwiper");
+var headart = document.querySelector(".segment.headlines .mySwiper");
 const dayart = document.querySelector(".segment.thisday .mySwiper");
 const date = new Date();
 let dd = date.getDate();
@@ -107,10 +116,13 @@ var topic = "technology";
 url =
   "https://newsapi.org/v2/everything?q=" +
   topic +
-  "&apiKey=bdcdedb8889c42c9b7e5b412ebf7e5cb";
+  "&apiKey=74123f9226704ff196099476c7f9cb68";
 fetch(url).then((res) => res.json().then((result) => datacall(result)));
 function datacall(result) {
   console.log(result);
+  document.querySelector(".segment.wide").innerHTML="<swiper-container class='mySwiper swiper-initialized swiper-vertical' direction='vertical' space-between='30' mousewheel='true' loop='true' autoplay-delay='12000' autoplay-disable-on-interaction='false'>"
+ newsart = document.querySelector(".segment.wide .mySwiper");
+  
   result.articles.forEach((res) => {
     var x = document.createElement("swiper-slide");
     var y = document.createElement("div");
@@ -123,12 +135,16 @@ function datacall(result) {
     var e = document.createElement("p");
     var f = document.createElement("p");
     var g = document.createElement("i");
+    var h =document.createElement("a");
     c.className = "authorpic";
     c.src = picarray[Math.floor(Math.random() * picarray.length)];
     b.className = "author";
     d.className = "authorinfo";
     z.className = "imagenews";
     y.className = "head";
+    h.classname = "invisible";
+    h.href = res.url;
+    h.target = "_blank";
     g.className = "fa-regular fa-star";
     g.setAttribute("title", "star this article");
     g.classList.add("save");
@@ -154,13 +170,23 @@ function datacall(result) {
     b.appendChild(g);
     d.appendChild(e);
     d.appendChild(f);
+    x.appendChild(h);
   });
+  var xu = document.querySelectorAll(".segment.wide .mySwiper swiper-slide");
+xu.forEach(el=>{
+  el.addEventListener("click",()=>{
+    el.querySelector("a").click();
+  })
+})
 }
+
 var country= "us";
-var headlineurl ="https://newsapi.org/v2/top-headlines?country="+country+"&apiKey=bdcdedb8889c42c9b7e5b412ebf7e5cb";
+var headlineurl ="https://newsapi.org/v2/top-headlines?country="+country+"&apiKey=74123f9226704ff196099476c7f9cb68";
 fetch(headlineurl).then((res) => res.json().then((result) => datacall2(result)));
 function datacall2(result) {
   console.log(result);
+  document.querySelector(".segment.headlines").innerHTML="<h2>Headlines</h2><div class='mySwiper'></div>"
+ headart = document.querySelector(".segment.headlines .mySwiper");
   result.articles.forEach((res) => {
     var x = document.createElement("swiper-slide");
     var y = document.createElement("div");
@@ -188,3 +214,56 @@ function datacall3(result){
     x.appendChild(z);
   });
 }
+document.querySelectorAll(".topic").forEach((item)=>{
+  item.addEventListener("click", ()=>{
+    if (item.classList.contains("active")) {
+      return;
+    }
+    else{
+      document.querySelectorAll(".topic").forEach((it)=>{
+        if (it.classList.contains("active")) {
+          it.classList.remove("active");
+        }
+      })
+      item.classList.add("active");
+    }
+    topic = item.textContent;
+    url =
+  "https://newsapi.org/v2/everything?q=" +
+  topic +
+  "&apiKey=74123f9226704ff196099476c7f9cb68";
+  fetch(url).then((res) => res.json().then((result) => datacall(result)));
+
+  })
+})
+document.querySelectorAll(".topic1").forEach((item)=>{
+  item.addEventListener("click", ()=>{
+    if (item.classList.contains("active")) {
+      return;
+    }
+    else{
+      document.querySelectorAll(".topic1").forEach((it)=>{
+        if (it.classList.contains("active")) {
+          it.classList.remove("active");
+        }
+      })
+      item.classList.add("active");
+    }
+    var country= item.getAttribute("data-query");
+var headlineurl ="https://newsapi.org/v2/top-headlines?country="+country+"&apiKey=74123f9226704ff196099476c7f9cb68";
+console.log(headlineurl);
+  fetch(headlineurl).then((res) => res.json().then((result) => datacall2(result)));
+  })
+})
+var darklight = document.querySelector(".darkbtn");
+darklight.addEventListener("click",()=>{
+  if (document.querySelector("body").classList.contains("dark")) {
+    document.querySelector("body").classList.remove("dark");
+    darklight.setAttribute("class", "fa-solid fa-moon darkbtn");
+  }
+  else {
+    document.querySelector("body").classList.add("dark");
+    darklight.setAttribute("class", "fa-solid fa-sun darkbtn");
+
+  }
+})
